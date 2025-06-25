@@ -1,0 +1,10 @@
+name: PvpItems
+version: '1.0'
+main: org.fooler.pvpItems.PvpItems
+api-version: '1.18'
+depend: [WorldGuard, WorldEdit]
+
+commands:
+  pvpitems:
+    description: Gives magnet to player
+    usage: /<command>
