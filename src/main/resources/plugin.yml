@@ -6,5 +6,5 @@ depend: [WorldGuard, WorldEdit]
 
 commands:
   pvpitems:
-    description: Gives magnet to player
+    description: Выдать магнит игроку
     usage: /<command>

@@ -50,7 +50,7 @@ public class RightClickListener implements Listener  {
 
         if (cooldownManager.isOnCooldown(uuid)) {
             int seconds = cooldownManager.getRemainingSeconds(uuid);
-            if (seconds == 0) cooldownManager.getCooldownsMap().remove(uuid);
+            if (seconds <= 0) cooldownManager.getCooldownsMap().remove(uuid);
 
             String msg = plugin.getConfig().getString("items.magnet.cooldown-message", "Магнит на перезарядке: %time% секунд.")
                     .replace("%time%", String.valueOf(seconds));

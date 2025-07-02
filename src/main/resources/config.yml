@@ -1,11 +1,12 @@
 items:
   magnet:
     lore:
-      - "Магнит, который притягивает"
-      - "в броне в радиусе игроков"
-      - "7 блоков."
+      - "&f╔Магнит, который притягивает╗"
+      - "&f║в броне в радиусе игроков  ║"
+      - "&f║7 блоков.                  ║"
     cooldown-time: 30 #in secs
-    cooldown-message: "Магнит на перезарядке!"
+    name: "&6Аттрактер"
+    cooldown-message: "Магнит на перезарядке: %time% секунд."
     push-sound: "ENTITY_PLAYER_LEVELUP"
     disabled-regions:
       - spawn

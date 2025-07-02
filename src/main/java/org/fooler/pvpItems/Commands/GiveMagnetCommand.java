@@ -13,10 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.fooler.pvpItems.PvpItems;
+import org.fooler.pvpItems.Utils.ItemBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GiveMagnetCommand implements CommandExecutor {
     private final PvpItems plugin;
@@ -29,36 +31,41 @@ public class GiveMagnetCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String lable, String[] args) {
-
         if (!(sender instanceof Player player)) return false;
 
 
-        if (!(cmd.getName().equalsIgnoreCase("pvpitems") && args.length > 0)) return false;
-        if (!(args[0].equalsIgnoreCase("give"))) {
+        if (!(cmd.getName().equalsIgnoreCase("pvpitems"))) return true;
+        if (!args[0].equalsIgnoreCase("give") || args.length != 3) {
             sender.sendMessage("Использование: /pvpitems give <предмет> <количество>");
-            return false;
+            return true;
+        }
+
+        int amount;
+        try {
+            amount = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            player.sendMessage("Количество должно быть числом");
+            return true;
         }
 
         if (args[1].equalsIgnoreCase("magnet")) {
-            ItemStack magnet = new ItemStack(Material.PRISMARINE_SHARD);
-            ItemMeta magnetMeta = magnet.getItemMeta();
-            magnetMeta.setDisplayName(ChatColor.GOLD + "Attracter");
+            ItemStack attracterInstance = new ItemBuilder(plugin, Material.PRISMARINE_SHARD)
+                    .amount(amount)
+                    .name(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("items.magnet.name"))))
+                    .lore("magnet")
+                    .flag("magnet")
+                    .build();
 
-            List<String> lore = new ArrayList<>();
-            for (String loreString : config.getStringList("items.magnet.lore")) {
-                lore.add(ChatColor.WHITE + loreString);
-            }
-            magnetMeta.setLore(lore);
+            player.getInventory().addItem(attracterInstance);
+        } else if (args[1].equalsIgnoreCase("dezor")) {
+            ItemStack dezorInstance = new ItemBuilder(plugin, Material.ENDER_EYE)
+                    .amount(amount)
+                    .name(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("items.dezor.name"))))
+                    .lore("dezor")
+                    .flag("dezor")
+                    .build();
 
-            magnetMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "magnet"), PersistentDataType.BYTE, (byte) 1);
-
-            magnet.setItemMeta(magnetMeta);
-            player.getInventory().addItem(magnet);
-        } else {
-            sender.sendMessage("Использование: /pvpitems give <предмет> <количество>");
-            return false;
         }
-
 
 
 
