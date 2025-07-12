@@ -1,12 +1,21 @@
 items:
   magnet:
     lore:
-      - "&f╔Магнит, который притягивает╗"
-      - "&f║в броне в радиусе игроков  ║"
-      - "&f║7 блоков.                  ║"
+      - "&6Магнит, который притягивает "
+      - "&6в броне в радиусе игроков   "
+      - "&67 блоков.                   "
     cooldown-time: 30 #in secs
-    name: "&6Аттрактер"
+    name: "&6&lАттрактер"
     cooldown-message: "Магнит на перезарядке: %time% секунд."
     push-sound: "ENTITY_PLAYER_LEVELUP"
     disabled-regions:
       - spawn
+  reflector:
+    lore:
+      - "&6Даёт возможность отражать все"
+      - "&6отрицательные входящие эффекты на противника"
+      - "&6в течение 5 минут после использования."
+    cooldown-time: 20 #in secs
+    name: "&6Рефлектор"
+    cooldown-message: "Рефлектор на перезарядке: %time% секунд."
+    push-sound: "ENTITY_ENDER_DRAGON_HURT"

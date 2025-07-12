@@ -2,29 +2,23 @@ package org.fooler.pvpItems.Commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.fooler.pvpItems.PvpItems;
 import org.fooler.pvpItems.Utils.ItemBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class GiveMagnetCommand implements CommandExecutor {
+public class GiveCommand implements CommandExecutor {
     private final PvpItems plugin;
     FileConfiguration config;
 
-    public GiveMagnetCommand(PvpItems plugin) {
+    public GiveCommand(PvpItems plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
     }
@@ -35,8 +29,8 @@ public class GiveMagnetCommand implements CommandExecutor {
 
 
         if (!(cmd.getName().equalsIgnoreCase("pvpitems"))) return true;
-        if (!args[0].equalsIgnoreCase("give") || args.length != 3) {
-            sender.sendMessage("Использование: /pvpitems give <предмет> <количество>");
+        if (!args[0].equalsIgnoreCase("give") || args.length != 3 || !sender.hasPermission("pvpitems.commands")) {
+            sender.sendMessage("Данной команды не существует!");
             return true;
         }
 
@@ -57,17 +51,17 @@ public class GiveMagnetCommand implements CommandExecutor {
                     .build();
 
             player.getInventory().addItem(attracterInstance);
-        } else if (args[1].equalsIgnoreCase("dezor")) {
-            ItemStack dezorInstance = new ItemBuilder(plugin, Material.ENDER_EYE)
+
+        } else if (args[1].equalsIgnoreCase("reflector")) {
+            ItemStack reflectorInstance = new ItemBuilder(plugin, Material.BRICK)
                     .amount(amount)
-                    .name(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("items.dezor.name"))))
-                    .lore("dezor")
-                    .flag("dezor")
+                    .name(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("items.reflector.name"))))
+                    .lore("reflector")
+                    .flag("reflector")
                     .build();
 
+            player.getInventory().addItem(reflectorInstance);
         }
-
-
 
         return true;
     }

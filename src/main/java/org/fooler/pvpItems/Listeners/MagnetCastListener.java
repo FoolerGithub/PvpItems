@@ -20,23 +20,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.fooler.pvpItems.PvpItems;
 import org.fooler.pvpItems.Utils.AttracterEffects;
-import org.fooler.pvpItems.Utils.MagnetCooldown;
+import org.fooler.pvpItems.Managers.CooldownManager;
 
 import java.util.List;
 import java.util.UUID;
 
-public class RightClickListener implements Listener  {
+public class MagnetCastListener implements Listener  {
     private static final Double RADIUS = 7.0;
-    private final MagnetCooldown cooldownManager;
+    private final CooldownManager cooldownManager;
     private final PvpItems plugin;
-    private FileConfiguration config;
+    private final FileConfiguration config;
 
-    public RightClickListener(PvpItems plugin) {
-        this.cooldownManager = new MagnetCooldown(plugin);
+    public MagnetCastListener(PvpItems plugin, CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
         this.config = plugin.getConfig();
         this.plugin = plugin;
     }
-
 
     @EventHandler
     public void itemUsage(PlayerInteractEvent e) {
@@ -48,23 +47,19 @@ public class RightClickListener implements Listener  {
         if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (hand == null || !isMagnet(hand)) return;
 
-        if (cooldownManager.isOnCooldown(uuid)) {
-            int seconds = cooldownManager.getRemainingSeconds(uuid);
-            if (seconds <= 0) cooldownManager.getCooldownsMap().remove(uuid);
+        if (cooldownManager.isOnCooldown("magnet", uuid)) {
+            int seconds = cooldownManager.getRemainingSeconds("magnet", uuid);
 
-            String msg = plugin.getConfig().getString("items.magnet.cooldown-message", "Магнит на перезарядке: %time% секунд.")
+            String msg = config.getString("items.magnet.cooldown-message", "Магнит на перезарядке: %time% секунд.")
                     .replace("%time%", String.valueOf(seconds));
             player.sendMessage(msg);
             e.setCancelled(true);
             return;
         }
 
-        ItemStack wastedMagnet = e.getItem();
-        if (wastedMagnet != null) {
-            wastedMagnet.setAmount(wastedMagnet.getAmount() - 1);
-        }
+        hand.setAmount(hand.getAmount() - 1);
 
-        cooldownManager.applyCooldown(uuid);
+        cooldownManager.applyCooldown("magnet", uuid);
 
         String pullSound = config.getString("items.magnet.push-sound", "ENTITY_PLAYER_LEVELUP");
 
@@ -83,11 +78,19 @@ public class RightClickListener implements Listener  {
                         livingPlayer.setVelocity(dir.multiply(1.55));
 
                     }
-                    center.getWorld().playSound(center, Sound.valueOf(pullSound.toUpperCase()), 1.0F, 1.0F);
+
+                    Sound sound;
+                    try {
+                        sound = Sound.valueOf(pullSound.toUpperCase());
+                    } catch (IllegalArgumentException ex) {
+                        sound = Sound.ENTITY_PLAYER_LEVELUP;
+                    }
+                    center.getWorld().playSound(center, sound, 1.0F, 1.0F);
 
                 }, 2L);
 
     }
+
     public boolean isMagnet(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasLore()) return false;
